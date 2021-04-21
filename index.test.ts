@@ -2,30 +2,18 @@ interface ITransformKeysObject<T> {
   [key: string]: T[]
 }
 
-function groupBy<T>(array: T[], callbackKeyGroup: (el: T) => void): ITransformKeysObject<T>  {
-
-  const keys = array.map((el) => { 
+function groupBy<T>(array: T[], callbackKeyGroup): ITransformKeysObject<T>  {
+  const resultObject = {}
+  array.forEach((el) => {
     const key = callbackKeyGroup(el)
-    return { [String(key)]: el }
+
+    if (resultObject[key] === undefined) {
+      resultObject[key] = [el]
+    } else if (resultObject[key] !== undefined) {
+      resultObject[key].push(el)
+    }
   })
-
-  const uniqueKeys = new Set(keys.map(key => Object.keys(key)[0]))
-  const transformKeysObject: ITransformKeysObject<T> = {}
-  for (let uniqKey of uniqueKeys) {
-    keys.forEach(obj => {
-      for (let [key, value] of Object.entries(obj)) {
-        if (key === uniqKey) {
-            if (uniqKey in transformKeysObject) {
-                transformKeysObject[uniqKey].push(value)
-            } else {
-              transformKeysObject[uniqKey] = [value]
-            }
-        }
-      }
-    })
-  }
-
-  return transformKeysObject
+  return resultObject
 }
 
 describe('Index.ts', () => {
