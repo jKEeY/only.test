@@ -4,9 +4,12 @@ interface ITransformKeysObject<T> {
 
 function groupBy<T>(array: T[], callbackKeyGroup): ITransformKeysObject<T>  {
   const resultObject = {}
-  array.forEach((el) => {
+  const callbackFunction = (el) => {
     const key = callbackKeyGroup(el)
-
+    return el[key] !== undefined ? el[key]() : key
+  }
+  array.forEach((el) => {
+    let key = callbackFunction(el)
     if (resultObject[key] === undefined) {
       resultObject[key] = [el]
     } else {
@@ -59,6 +62,22 @@ describe('Index.ts', () => {
       { g: Gender.Female, n: "C" },
     ],
     (el) => el.g)
+
+    expect(result).toEqual(COMPARISON_OBJECT)
+  })
+
+  it('any test', () => {
+    enum Gender {
+      Male,
+      Female,
+    }
+    const COMPARISON_OBJECT = {
+      "1": [1, 1],
+      "2": [2],
+      "3": [3]
+    };
+
+    const result = groupBy([1, 2, 3, 1], () => 'toString')
 
     expect(result).toEqual(COMPARISON_OBJECT)
   })
