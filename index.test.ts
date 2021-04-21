@@ -9,7 +9,7 @@ function groupBy<T>(array: T[], callbackKeyGroup): ITransformKeysObject<T>  {
 
     if (resultObject[key] === undefined) {
       resultObject[key] = [el]
-    } else if (resultObject[key] !== undefined) {
+    } else {
       resultObject[key].push(el)
     }
   })
